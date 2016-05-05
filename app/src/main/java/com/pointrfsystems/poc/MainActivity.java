@@ -1,7 +1,10 @@
 package com.pointrfsystems.poc;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -10,53 +13,28 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 
-public class MainActivity extends Activity {
-
-    Button button;
-    ImageView arrow;
+public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        final Animation animationRotateCenter = AnimationUtils.loadAnimation(
-                this, R.anim.rotate);
-
-        arrow = (ImageView) findViewById(R.id.arrow);
-
-        button = (Button) findViewById(R.id.go);
-
-        button.setOnClickListener(new Button.OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
-                // TODO Auto-generated method stub
-                arrow.startAnimation(animationRotateCenter);
-            }
-        });
-
-
-        initialize();
-
+        addBackStack(new MainFragment());
     }
 
-
-    private void initialize() {
-        Uart uart = new Uart(new UartCallback() {
-            @Override
-            public void bleMsg(String bleId, byte rssi, byte[] macAddr, byte[] rawMsg) {
-                Log.e("APP", rssi + " ");
-            }
-        });
-
-        uart.start();
-
-        while (true) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+    public void replace(Fragment fragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        FragmentTransaction tx = fragmentManager.beginTransaction();
+        tx.replace(R.id.container, fragment);
+        tx.commitAllowingStateLoss();
     }
+
+    public void addBackStack(Fragment fragment) {
+        FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
+        tx.replace(R.id.container, fragment);
+        tx.addToBackStack(fragment.getClass().getName());
+        tx.commitAllowingStateLoss();
+    }
+
 }
