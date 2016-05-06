@@ -5,12 +5,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.Button;
-import android.widget.ImageView;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -19,7 +13,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        addBackStack(new MainFragment());
+        addBackStack(new PasscodeFragment());
     }
 
     public void replace(Fragment fragment) {
@@ -37,4 +31,18 @@ public class MainActivity extends AppCompatActivity {
         tx.commitAllowingStateLoss();
     }
 
+    protected Fragment getCurrentFragment() {
+        return getSupportFragmentManager().findFragmentById(R.id.container);
+    }
+
+    public void showNext() {
+        Fragment currentFragment = getCurrentFragment();
+        if (currentFragment instanceof PasscodeFragment) {
+            replace(new BleidFragment());
+        }
+        if (currentFragment instanceof BleidFragment) {
+            replace(new MainFragment());
+        }
+
+    }
 }

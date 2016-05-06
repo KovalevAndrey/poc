@@ -15,6 +15,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,15 +26,28 @@ import com.pointrfsystems.poc.utils.Parser;
 import java.lang.ref.WeakReference;
 import java.util.Set;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 /**
  * Created by an.kovalev on 04.05.2016.
  */
 public class MainFragment extends Fragment {
 
-    private ImageView bar;
+    @Bind(R.id.bar_curent_rssi)
+    ImageView bar;
+    @Bind(R.id.bar_max_rssi)
+    ImageView max_bar;
+    @Bind(R.id.clear)
+    Button clear;
+    @Bind(R.id.curr_value)
+    TextView curr_value;
+    @Bind(R.id.max_value)
+    TextView max_value;
     private DiagramAnimator diagramAnimator;
     private UsbService usbService;
-    public TextView display;
+    @Bind(R.id.result)
+    TextView display;
     private MyHandler mHandler;
 
     private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
@@ -82,14 +96,18 @@ public class MainFragment extends Fragment {
     };
 
 
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
-        display = (TextView) view.findViewById(R.id.result);
-        bar = (ImageView) view.findViewById(R.id.bar_curent_rssi);
-        diagramAnimator = new DiagramAnimator(bar, 400);
+        ButterKnife.bind(this, view);
+        diagramAnimator = new DiagramAnimator(bar, max_bar, 400, curr_value, max_value);
+        clear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                diagramAnimator.clearMaxValue();
+            }
+        });
         return view;
     }
 

@@ -3,42 +3,33 @@ package com.pointrfsystems.poc;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.Button;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
 /**
- * Created by an.kovalev on 04.05.2016.
+ * Created by an.kovalev on 05.05.2016.
  */
-public class PasscodeFragment extends Fragment {
+public class BleidFragment extends Fragment {
 
-    @Bind(R.id.blied)
-    TextView bleid;
-    @Bind(R.id.passcode_edit)
-    EditText editText;
+    @Bind(R.id.enter_bleid)
+    Button enter_bleid;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_passcode, container, false);
+        View view = inflater.inflate(R.layout.fragment_bleid, container, false);
         ButterKnife.bind(this, view);
-        bleid.setOnClickListener(new View.OnClickListener() {
+        enter_bleid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ((MainActivity) getActivity()).showNext();
             }
         });
-        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.hide();
-        }
         return view;
     }
 }
