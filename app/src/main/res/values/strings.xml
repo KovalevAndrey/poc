@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">POC</string>
+    <string name="passcode_incorrect">Invalid passcode</string>
+    <string name="enter_bleid">Please enter bleid</string>
+    <string name="bleid_go_to">Go to tracking screen</string>
+    <string name="edit_link">Edit link</string>
+    <string name="pick_image">Pick image</string>
+    <string name="ok">Ok</string>
+
+
 </resources>

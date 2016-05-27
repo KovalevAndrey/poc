@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -35,14 +36,23 @@ public class MainActivity extends AppCompatActivity {
         return getSupportFragmentManager().findFragmentById(R.id.container);
     }
 
+    public void showTost(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+    }
+
     public void showNext() {
         Fragment currentFragment = getCurrentFragment();
         if (currentFragment instanceof PasscodeFragment) {
             replace(new BleidFragment());
         }
-        if (currentFragment instanceof BleidFragment) {
-            replace(new MainFragment());
-        }
 
+    }
+
+    public void showTrackingScreen(String bleid) {
+        replace(TrackingFragment.newInstance(bleid));
+    }
+
+    public void showSettingsFragment() {
+        addBackStack(new SettingsFragment());
     }
 }

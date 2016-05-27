@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.pointrfsystems.poc.data.LocalRepository;
 import com.pointrfsystems.poc.data.SerialPortMessage;
 import com.pointrfsystems.poc.utils.Parser;
 
@@ -32,7 +33,10 @@ import butterknife.ButterKnife;
 /**
  * Created by an.kovalev on 04.05.2016.
  */
-public class MainFragment extends Fragment {
+public class TrackingFragment extends Fragment {
+
+    private static final String BLEID = "bleid";
+    private static final String BLEID_VALUE = "value";
 
     @Bind(R.id.bar_curent_rssi)
     ImageView bar;
@@ -49,6 +53,11 @@ public class MainFragment extends Fragment {
     @Bind(R.id.result)
     TextView display;
     private MyHandler mHandler;
+    private String bleid;
+    private boolean shouldCompare;
+
+
+    LocalRepository localRepository;
 
     private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
         @Override
@@ -96,11 +105,29 @@ public class MainFragment extends Fragment {
     };
 
 
+    public static TrackingFragment newInstance(String bleid) {
+        TrackingFragment trackingFragment = new TrackingFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(BLEID, bleid);
+        trackingFragment.setArguments(bundle);
+        return trackingFragment;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
         ButterKnife.bind(this, view);
+
+        localRepository = LocalRepository.getInstance(getContext());
+        bleid = getArguments().getString(BLEID);
+
+        if (bleid == null || bleid.isEmpty()) {
+            shouldCompare = false;
+        } else {
+            shouldCompare = true;
+        }
+
         diagramAnimator = new DiagramAnimator(bar, max_bar, 400, curr_value, max_value);
         clear.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,12 +142,12 @@ public class MainFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mHandler = new MyHandler(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        mHandler = new MyHandler(this);
         setFilters();  // Start listening notifications from UsbService
         startService(UsbService.class, usbConnection, null); // Start UsbService(if it was not started before) and Bind it
     }
@@ -128,9 +155,14 @@ public class MainFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
+
         getActivity().unregisterReceiver(mUsbReceiver);
         getActivity().unbindService(usbConnection);
+        Intent stopService = new Intent(getContext(), UsbService.class);
+        getActivity().stopService(stopService);
     }
+
+
 
     private void startService(Class<?> service, ServiceConnection serviceConnection, Bundle extras) {
         if (!UsbService.SERVICE_CONNECTED) {
@@ -160,9 +192,9 @@ public class MainFragment extends Fragment {
 
     private static class UsbCallback implements UartCallback {
 
-        private WeakReference<MainFragment> mFragment = null;
+        private WeakReference<TrackingFragment> mFragment = null;
 
-        public void setFragment(WeakReference<MainFragment> mFragment) {
+        public void setFragment(WeakReference<TrackingFragment> mFragment) {
             this.mFragment = mFragment;
         }
 
@@ -181,7 +213,7 @@ public class MainFragment extends Fragment {
      * This handler will be passed to UsbService. Data received from serial port is displayed through this handler
      */
     private static class MyHandler extends Handler {
-        private final WeakReference<MainFragment> mFragment;
+        private final WeakReference<TrackingFragment> mFragment;
 
         static private byte[] buf = new byte[4096];
         static private byte[] pkt = new byte[1024];
@@ -195,7 +227,7 @@ public class MainFragment extends Fragment {
 
         static private Parser parser = new Parser(MyHandler.usbCallback);
 
-        public MyHandler(MainFragment fragment) {
+        public MyHandler(TrackingFragment fragment) {
             mFragment = new WeakReference<>(fragment);
             MyHandler.usbCallback.setFragment(mFragment);
 
@@ -212,13 +244,24 @@ public class MainFragment extends Fragment {
                     int i;
                     //String data = (String) msg.obj;
 
+                    if (mFragment.get() == null) {
+                        return;
+                    }
                     SerialPortMessage data = (SerialPortMessage) msg.obj;
                     //parser.newData(data.getBytes(), data.length());
 
                     //mFragment.get().display.append(data);
-                    mFragment.get().display.setText(Integer.toString(data.getRssi()));
-                    mFragment.get().diagramAnimator.animateView(data.getRssi());
+                    mFragment.get().display.setText(data.getBleId());
 
+
+                    if (mFragment.get().shouldCompare) {
+                        String blied = mFragment.get().bleid;
+                        if (data.getBleId().equals(blied)) {
+                            mFragment.get().diagramAnimator.animateView(data.getRssi());
+                        }
+                    } else {
+                        mFragment.get().diagramAnimator.animateView(data.getRssi());
+                    }
 
                     break;
                 case UsbService.CTS_CHANGE:
