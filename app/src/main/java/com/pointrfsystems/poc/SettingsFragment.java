@@ -102,11 +102,11 @@ public class SettingsFragment extends Fragment implements DialogInterface.OnDism
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 int id;
                 if (checkedId == mute.getId()) {
-                    id = 0;
+                    id = LocalRepository.MUTE;
                 } else if (checkedId == vibro.getId()) {
-                    id = 1;
+                    id = LocalRepository.VIBRO;
                 } else {
-                    id = 2;
+                    id = LocalRepository.NORMAL;
                 }
                 localRepository.storeVolumeSettings(id);
             }
