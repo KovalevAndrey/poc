@@ -28,11 +28,21 @@ public class EditLinkFragment extends DialogFragment {
     Button ok;
 
     private LocalRepository localRepository;
+    private static final String PATH = "path";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         localRepository = LocalRepository.getInstance(getContext());
+    }
+
+
+    public static EditLinkFragment newInstance(String path) {
+        EditLinkFragment editLinkFragment = new EditLinkFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(PATH, path);
+        editLinkFragment.setArguments(bundle);
+        return editLinkFragment;
     }
 
     @Nullable
@@ -41,6 +51,16 @@ public class EditLinkFragment extends DialogFragment {
         View view = inflater.inflate(R.layout.fragment_edit_link, container, false);
         ButterKnife.bind(this, view);
         getDialog().setTitle("Edit link");
+
+        Bundle bundle = getArguments();
+
+        if (bundle != null) {
+            String path = bundle.getString(PATH);
+            if (path != null) {
+                editText.setText(path);
+            }
+        }
+
         ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -6,8 +6,11 @@
 
     <TextView
         android:id="@+id/link"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_margin="15dp"
         android:layout_marginTop="20dp"
         android:layout_toLeftOf="@+id/edit_link" />
@@ -36,6 +39,39 @@
         android:layout_alignBottom="@+id/logo"
         android:layout_centerHorizontal="true"
         android:text="@string/pick_image" />
+
+    <RadioGroup
+        android:id="@+id/radio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/pick_image">
+
+
+        <RadioButton
+            android:id="@+id/mute"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="24dp"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:text="MUTE" />
+
+        <RadioButton
+            android:id="@+id/vibro"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="24dp"
+            android:layout_weight="1"
+            android:text="VIBRO" />
+
+        <RadioButton
+            android:id="@+id/normal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="24dp"
+            android:layout_weight="1"
+            android:text="NORMAL" />
+    </RadioGroup>
 
 
 </RelativeLayout>

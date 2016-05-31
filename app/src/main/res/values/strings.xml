@@ -6,6 +6,6 @@
     <string name="edit_link">Edit link</string>
     <string name="pick_image">Pick image</string>
     <string name="ok">Ok</string>
-
+    <string name="network_error">No network is available</string>
 
 </resources>

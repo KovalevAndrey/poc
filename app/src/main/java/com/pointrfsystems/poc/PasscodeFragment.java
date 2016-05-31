@@ -16,6 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.pointrfsystems.poc.data.LocalRepository;
+import com.pointrfsystems.poc.utils.Utils;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -93,11 +95,14 @@ public class PasscodeFragment extends Fragment {
     View passcode_5;
     @Bind(R.id.logo_top)
     ImageView logo_top;
+    @Bind(R.id.passcode_warning)
+    TextView passcode_warning;
 
 
     private StringBuffer password;
     private Subscription subscription;
-    Observable<Void> sevenClicks;
+    private Observable<Void> sevenClicks;
+    private LocalRepository localRepository;
 
     @Nullable
     @Override
@@ -212,6 +217,12 @@ public class PasscodeFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        localRepository = LocalRepository.getInstance(getContext());
+    }
+
     private void addDigit(char digit) {
         if (password.length() >= 5) {
             return;
@@ -222,7 +233,22 @@ public class PasscodeFragment extends Fragment {
         if ((digit > 96 && digit < 101) && password.length() == 4) {
             password.append(digit);
         }
+
+        if (password.length() == 5) {
+            checkPassword();
+            if (!Utils.isNetworkAvailable(getContext())) {
+                ((MainActivity) getActivity()).showToast(getString(R.string.network_error));
+            }
+        }
         checkVisibility();
+    }
+
+    private void checkPassword() {
+        if (password.toString().equals(localRepository.getPassword())) {
+
+        } else {
+            passcode_warning.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -299,5 +325,8 @@ public class PasscodeFragment extends Fragment {
         }
         password.deleteCharAt(password.length() - 1);
         checkVisibility();
+        if (passcode_warning.getVisibility() == View.VISIBLE) {
+            passcode_warning.setVisibility(View.GONE);
+        }
     }
 }

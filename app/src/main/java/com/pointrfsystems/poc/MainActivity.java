@@ -14,7 +14,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        addBackStack(new PasscodeFragment());
+        replace(new PasscodeFragment());
     }
 
     public void replace(Fragment fragment) {
@@ -36,20 +36,20 @@ public class MainActivity extends AppCompatActivity {
         return getSupportFragmentManager().findFragmentById(R.id.container);
     }
 
-    public void showTost(String message) {
+    public void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
     public void showNext() {
         Fragment currentFragment = getCurrentFragment();
         if (currentFragment instanceof PasscodeFragment) {
-            replace(new BleidFragment());
+            addBackStack(new BleidFragment());
         }
 
     }
 
     public void showTrackingScreen(String bleid) {
-        replace(TrackingFragment.newInstance(bleid));
+        addBackStack(TrackingFragment.newInstance(bleid));
     }
 
     public void showSettingsFragment() {

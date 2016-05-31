@@ -83,12 +83,12 @@
             android:id="@+id/passcode_warning"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/passcode_edit"
             android:layout_centerHorizontal="true"
             android:text="@string/passcode_incorrect"
-            android:layout_below="@+id/passcode_edit"
             android:textColor="@color/white"
             android:textSize="14sp"
-            android:visibility="visible"/>
+            android:visibility="gone" />
 
         <RelativeLayout
             android:id="@+id/row_1"

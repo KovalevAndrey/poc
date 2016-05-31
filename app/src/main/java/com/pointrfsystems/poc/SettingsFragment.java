@@ -7,14 +7,12 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
@@ -22,18 +20,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.pointrfsystems.poc.data.LocalRepository;
 import com.pointrfsystems.poc.utils.Utils;
 import com.pointrfsystems.poc.views.EditLinkFragment;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -44,7 +41,7 @@ import butterknife.ButterKnife;
 /**
  * Created by a.kovalev on 23.05.16.
  */
-public class SettingsFragment extends Fragment implements DialogInterface.OnDismissListener{
+public class SettingsFragment extends Fragment implements DialogInterface.OnDismissListener {
 
     @Bind(R.id.link)
     TextView link;
@@ -54,6 +51,15 @@ public class SettingsFragment extends Fragment implements DialogInterface.OnDism
     ImageView logo;
     @Bind(R.id.pick_image)
     Button image_pick;
+    @Bind(R.id.mute)
+    RadioButton mute;
+    @Bind(R.id.vibro)
+    RadioButton vibro;
+    @Bind(R.id.normal)
+    RadioButton normal;
+    @Bind(R.id.radio)
+    RadioGroup radioGroup;
+
     private String userChosenTask;
 
     private final int REQUEST_CAMERA = 0;
@@ -63,7 +69,6 @@ public class SettingsFragment extends Fragment implements DialogInterface.OnDism
     private final String CHOOSE_FROM_LIBRARY = "Choose from Library";
     private final String CANCEL = "Cancel";
     private LocalRepository localRepository;
-
 
 
     @Override
@@ -88,42 +93,62 @@ public class SettingsFragment extends Fragment implements DialogInterface.OnDism
                 selectImage();
             }
         });
-        String path = localRepository.getImagePath();
-        if (!path.equals("")) {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-            Bitmap bitmap = BitmapFactory.decodeFile(path, options);
-            logo.setImageBitmap(bitmap);
+        resolveBitmap();
+        resolveVolume();
+        resolveLink();
 
-        } else {
-            Bitmap stub = Bitmap.createBitmap(300, 300, Bitmap.Config.ARGB_8888);
-            stub.eraseColor(Color.GRAY);
-            logo.setImageBitmap(stub);
-        }
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                int id;
+                if (checkedId == mute.getId()) {
+                    id = 0;
+                } else if (checkedId == vibro.getId()) {
+                    id = 1;
+                } else {
+                    id = 2;
+                }
+                localRepository.storeVolumeSettings(id);
+            }
+        });
 
         edit_link.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FragmentManager fm = getChildFragmentManager();
-                DialogFragment dialogFragment = new EditLinkFragment();
-                dialogFragment.show(fm, "edit_link");
+                EditLinkFragment editLinkFragment = EditLinkFragment.newInstance(link.getText().toString());
+                editLinkFragment.show(fm, "edit_link");
             }
         });
 
         return view;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
+    private void resolveLink() {
         link.setText(localRepository.getApiLink());
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
+    private void resolveVolume() {
+        int settingsVolume = localRepository.getVolumeSettings();
 
+        if (settingsVolume == LocalRepository.MUTE) {
+            radioGroup.check(mute.getId());
+        } else if (settingsVolume == LocalRepository.VIBRO) {
+            radioGroup.check(vibro.getId());
+        } else if (settingsVolume == LocalRepository.NORMAL) {
+            radioGroup.check(normal.getId());
+        }
 
+    }
+
+    private void resolveBitmap() {
+        String path = localRepository.getImagePath();
+        if (!path.equals("")) {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+            Bitmap bitmap = BitmapFactory.decodeFile(path, options);
+            logo.setImageBitmap(bitmap);
+        }
     }
 
     @Override
@@ -253,6 +278,5 @@ public class SettingsFragment extends Fragment implements DialogInterface.OnDism
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Select File"), SELECT_FILE);
     }
-
 
 }
