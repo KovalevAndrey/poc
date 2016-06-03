@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void lockScreen() {
-        if (!(getCurrentFragment() instanceof PasscodeFragment)) {
+        if (!(getCurrentFragment() instanceof PasscodeFragment || getCurrentFragment() instanceof TrackingFragment)) {
             replace(new PasscodeFragment());
         }
     }
