@@ -12,8 +12,10 @@ public class LocalRepository {
     private SharedPreferences preferences;
     private static final String POC_PREF = "POC_PREF";
     private static final String PASSWORD = "PASSWORD";
+    private static final String IS_REGISTRED = "IS_REGISTRED";
     private static final String BLEID = "BLEID";
-    private static final String IMAGE = "IMAGE";
+    private static final String POINTRF = "POINTRF";
+    private static final String NOWANDER = "NOWANDER";
     private static final String API = "API";
     private static final String VOLUME = "VOLUME";
     public static final int VIBRO = 0;
@@ -43,14 +45,24 @@ public class LocalRepository {
         return preferences.getString(BLEID, "");
     }
 
-    public synchronized void storeImagePath(String path) {
+    public synchronized void storePointrfPath(String path) {
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(IMAGE, path);
+        editor.putString(POINTRF, path);
         editor.apply();
     }
 
-    public synchronized String getImagePath() {
-        return preferences.getString(IMAGE, "");
+    public synchronized String getPointRfPath() {
+        return preferences.getString(POINTRF, "");
+    }
+
+    public synchronized void storeNowanderPath(String path) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(NOWANDER, path);
+        editor.apply();
+    }
+
+    public synchronized String getNowanderPath() {
+        return preferences.getString(NOWANDER, "");
     }
 
     public synchronized void storeApiLink(String link) {
@@ -82,7 +94,19 @@ public class LocalRepository {
     }
 
     public synchronized String getPassword() {
-        return preferences.getString(PASSWORD, "");
+        return "1234A";
+        //return preferences.getString(PASSWORD, "");
+    }
+
+
+    public synchronized void setAppRegistred(boolean isRegisted) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean(IS_REGISTRED, isRegisted);
+        editor.apply();
+    }
+
+    public synchronized boolean isAppRegistred() {
+        return preferences.getBoolean(IS_REGISTRED, false);
     }
 }
 

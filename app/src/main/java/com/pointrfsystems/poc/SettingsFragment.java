@@ -47,10 +47,14 @@ public class SettingsFragment extends Fragment implements DialogInterface.OnDism
     TextView link;
     @Bind(R.id.edit_link)
     Button edit_link;
-    @Bind(R.id.logo)
-    ImageView logo;
-    @Bind(R.id.pick_image)
-    Button image_pick;
+    @Bind(R.id.logo_pointrf)
+    ImageView logo_pointrf;
+    @Bind(R.id.logo_nowander)
+    ImageView logo_nowander;
+    @Bind(R.id.pick_image_pontrf)
+    Button image_pick_pointrf;
+    @Bind(R.id.pick_image_nowander)
+    Button image_pick_nowander;
     @Bind(R.id.mute)
     RadioButton mute;
     @Bind(R.id.vibro)
@@ -59,6 +63,11 @@ public class SettingsFragment extends Fragment implements DialogInterface.OnDism
     RadioButton normal;
     @Bind(R.id.radio)
     RadioGroup radioGroup;
+    @Bind(R.id.register_device)
+    Button register_device;
+
+    private static int POINT_RF_IMAGE = 0;
+    private static int NO_WANDER = 1;
 
     private String userChosenTask;
 
@@ -69,6 +78,7 @@ public class SettingsFragment extends Fragment implements DialogInterface.OnDism
     private final String CHOOSE_FROM_LIBRARY = "Choose from Library";
     private final String CANCEL = "Cancel";
     private LocalRepository localRepository;
+    private int currentImage = -1;
 
 
     @Override
@@ -87,9 +97,17 @@ public class SettingsFragment extends Fragment implements DialogInterface.OnDism
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
         ButterKnife.bind(this, view);
-        image_pick.setOnClickListener(new View.OnClickListener() {
+        image_pick_pointrf.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                currentImage = POINT_RF_IMAGE;
+                selectImage();
+            }
+        });
+        image_pick_nowander.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                 currentImage = NO_WANDER;
                 selectImage();
             }
         });
@@ -121,6 +139,13 @@ public class SettingsFragment extends Fragment implements DialogInterface.OnDism
             }
         });
 
+        register_device.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity) getActivity()).showRegistrationFragment();
+            }
+        });
+
         return view;
     }
 
@@ -142,12 +167,20 @@ public class SettingsFragment extends Fragment implements DialogInterface.OnDism
     }
 
     private void resolveBitmap() {
-        String path = localRepository.getImagePath();
+        String path = localRepository.getPointRfPath();
         if (!path.equals("")) {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inPreferredConfig = Bitmap.Config.ARGB_8888;
             Bitmap bitmap = BitmapFactory.decodeFile(path, options);
-            logo.setImageBitmap(bitmap);
+            logo_pointrf.setImageBitmap(bitmap);
+        }
+
+        String path1 = localRepository.getNowanderPath();
+        if (!path.equals("")) {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+            Bitmap bitmap = BitmapFactory.decodeFile(path1, options);
+            logo_nowander.setImageBitmap(bitmap);
         }
     }
 
@@ -187,13 +220,19 @@ public class SettingsFragment extends Fragment implements DialogInterface.OnDism
                 bitmap = Bitmap.createBitmap(MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), data.getData()));
                 Uri uri = data.getData();
                 String path = getRealPathFromURI(uri);
-                localRepository.storeImagePath(path);
+                if (currentImage == POINT_RF_IMAGE)
+                    localRepository.storePointrfPath(path);
+                else
+                    localRepository.storeNowanderPath(path);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-
-        logo.setImageBitmap(bitmap);
+        if (currentImage == POINT_RF_IMAGE) {
+            logo_pointrf.setImageBitmap(bitmap);
+        } else {
+            logo_nowander.setImageBitmap(bitmap);
+        }
 
     }
 
@@ -233,8 +272,13 @@ public class SettingsFragment extends Fragment implements DialogInterface.OnDism
             e.printStackTrace();
         }
 
-        localRepository.storeImagePath(destionation.getPath());
-        logo.setImageBitmap(thumbnail);
+        if (currentImage == POINT_RF_IMAGE) {
+            localRepository.storePointrfPath(destionation.getPath());
+            logo_pointrf.setImageBitmap(thumbnail);
+        } else {
+            localRepository.storeNowanderPath(destionation.getPath());
+            logo_nowander.setImageBitmap(thumbnail);
+        }
     }
 
 

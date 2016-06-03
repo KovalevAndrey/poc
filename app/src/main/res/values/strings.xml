@@ -4,8 +4,14 @@
     <string name="enter_bleid">Please enter bleid</string>
     <string name="bleid_go_to">Go to tracking screen</string>
     <string name="edit_link">Edit link</string>
-    <string name="pick_image">Pick image</string>
+    <string name="pick_image_pointrf">Pick image pointrf</string>
+    <string name="pick_image_nowander">Pick image no wander</string>
     <string name="ok">Ok</string>
     <string name="network_error">No network is available</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="registration">Registration</string>
+    <string name="register_device">Register device</string>
+    <string name="clear">Clear</string>
 
 </resources>

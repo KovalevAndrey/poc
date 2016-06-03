@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.pointrfsystems.poc.data.LocalRepository;
 import com.pointrfsystems.poc.data.SerialPortMessage;
+import com.pointrfsystems.poc.data.SoundPlayer;
 import com.pointrfsystems.poc.utils.Parser;
 
 import java.lang.ref.WeakReference;
@@ -48,16 +49,20 @@ public class TrackingFragment extends Fragment {
     TextView curr_value;
     @Bind(R.id.max_value)
     TextView max_value;
-    private DiagramAnimator diagramAnimator;
-    private UsbService usbService;
     @Bind(R.id.result)
     TextView display;
+    @Bind(R.id.sound_image)
+    ImageView sound_image;
+
     private MyHandler mHandler;
     private String bleid;
     private boolean shouldCompare;
-
-
+    private DiagramAnimator diagramAnimator;
     LocalRepository localRepository;
+    private UsbService usbService;
+    private SoundPlayer soundPlayer;
+
+    int sound;
 
     private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
         @Override
@@ -113,10 +118,11 @@ public class TrackingFragment extends Fragment {
         return trackingFragment;
     }
 
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_main, container, false);
+        View view = inflater.inflate(R.layout.fragment_tracking, container, false);
         ButterKnife.bind(this, view);
 
         localRepository = LocalRepository.getInstance(getContext());
@@ -135,6 +141,34 @@ public class TrackingFragment extends Fragment {
                 diagramAnimator.clearMaxValue();
             }
         });
+
+        if (localRepository.getVolumeSettings() == LocalRepository.MUTE) {
+            sound = LocalRepository.MUTE;
+        } else {
+            sound = LocalRepository.NORMAL;
+        }
+
+        if (sound == LocalRepository.MUTE) {
+            sound_image.setBackground(getResources().getDrawable(R.drawable.mute_image));
+        } else {
+            sound_image.setBackground(getResources().getDrawable(R.drawable.unmute_image));
+        }
+
+
+        sound_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (sound == LocalRepository.MUTE) {
+                    sound_image.setBackground(getResources().getDrawable(R.drawable.unmute_image));
+                    sound = LocalRepository.NORMAL;
+                } else {
+                    sound_image.setBackground(getResources().getDrawable(R.drawable.mute_image));
+                    sound = LocalRepository.MUTE;
+                }
+            }
+        });
+
+
         return view;
     }
 
@@ -142,6 +176,13 @@ public class TrackingFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        soundPlayer = new SoundPlayer();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        soundPlayer.release();
     }
 
     @Override
@@ -155,13 +196,12 @@ public class TrackingFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-
+        localRepository.storeVolumeSettings(sound);
         getActivity().unregisterReceiver(mUsbReceiver);
         getActivity().unbindService(usbConnection);
         Intent stopService = new Intent(getContext(), UsbService.class);
         getActivity().stopService(stopService);
     }
-
 
 
     private void startService(Class<?> service, ServiceConnection serviceConnection, Bundle extras) {
@@ -258,9 +298,15 @@ public class TrackingFragment extends Fragment {
                         String blied = mFragment.get().bleid;
                         if (data.getBleId().equals(blied)) {
                             mFragment.get().diagramAnimator.animateView(data.getRssi());
+                            if (mFragment.get().soundPlayer != null && mFragment.get().sound != LocalRepository.MUTE) {
+                                mFragment.get().soundPlayer.setFrequency(data.getRssi());
+                            }
                         }
                     } else {
                         mFragment.get().diagramAnimator.animateView(data.getRssi());
+                        if (mFragment.get().soundPlayer != null && mFragment.get().sound != LocalRepository.MUTE) {
+                            mFragment.get().soundPlayer.setFrequency(data.getRssi());
+                        }
                     }
 
                     break;

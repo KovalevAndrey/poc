@@ -46,10 +46,10 @@ public class PasscodeFragment extends Fragment {
     private final char seven = '7';
     private final char eight = '8';
     private final char nine = '9';
-    private final char a = 'a';
-    private final char b = 'b';
-    private final char c = 'c';
-    private final char d = 'd';
+    private final char a = 'A';
+    private final char b = 'B';
+    private final char c = 'C';
+    private final char d = 'D';
 
     @Bind(R.id.blied)
     TextView bleid;
@@ -230,7 +230,7 @@ public class PasscodeFragment extends Fragment {
         if ((digit > 47 && digit < 58) && password.length() < 4) {
             password.append(digit);
         }
-        if ((digit > 96 && digit < 101) && password.length() == 4) {
+        if ((digit > 64 && digit < 69) && password.length() == 4) {
             password.append(digit);
         }
 
@@ -245,7 +245,9 @@ public class PasscodeFragment extends Fragment {
 
     private void checkPassword() {
         if (password.toString().equals(localRepository.getPassword())) {
-
+            if (!localRepository.isAppRegistred()) {
+                ((MainActivity) getActivity()).showRegistrationFragment();
+            }
         } else {
             passcode_warning.setVisibility(View.VISIBLE);
         }

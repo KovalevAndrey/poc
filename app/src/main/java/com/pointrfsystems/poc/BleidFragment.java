@@ -4,8 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
-import android.text.InputFilter;
-import android.text.Spanned;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,7 +39,7 @@ public class BleidFragment extends Fragment {
             public void onClick(View view) {
                 String bleid = bleid_edit.getText().toString();
                 localRepository.storeBleid(bleid);
-                ((MainActivity) getActivity()).showTrackingScreen(bleid);
+                ((MainActivity) getActivity()).showTrackingFragment(bleid);
             }
         });
         enter_bleid.setEnabled(false);

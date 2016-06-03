@@ -324,10 +324,11 @@
         android:layout_alignParentBottom="true">
 
         <ImageView
-            android:id="@+id/logo_pointrf"
+            android:id="@+id/pointrf_image"
             android:layout_width="120dp"
             android:layout_height="60dp"
-            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:background="@drawable/pintrf_logo" />
 
         <ImageView

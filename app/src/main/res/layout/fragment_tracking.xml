@@ -71,9 +71,9 @@
         android:layout_above="@+id/user_data"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="20dp"
-        android:textColor="@color/white"
         android:background="@drawable/button_clear"
-        android:text="Clear" />
+        android:text="@string/clear"
+        android:textColor="@color/white" />
 
     <LinearLayout
         android:id="@+id/user_data"
@@ -95,5 +95,15 @@
             android:layout_weight="1"
             android:background="@android:color/black" />
     </LinearLayout>
+
+
+    <ImageView
+        android:id="@+id/sound_image"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp" />
 
 </RelativeLayout>
