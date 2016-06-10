@@ -99,6 +99,22 @@ public class MainActivity extends AppCompatActivity {
         unregisterReceiver(mReceiver);
     }
 
+
+    @Override
+    public void onBackPressed() {
+        Fragment fragment = getCurrentFragment();
+        if (fragment instanceof BleidFragment) {
+            BleidFragment bleidFragment = (BleidFragment) fragment;
+            if (bleidFragment.isCustomKeyboardVisible()) {
+                bleidFragment.hideCustomKeyboard();
+            } else {
+                super.onBackPressed();
+            }
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     public void replace(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);

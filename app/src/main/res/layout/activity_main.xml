@@ -6,29 +6,39 @@
     tools:context="com.pointrfsystems.poc.MainActivity">
 
     <!--<ImageView-->
-        <!--android:id="@+id/scale"-->
-        <!--android:background="@drawable/scale"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="Hello World!" />-->
+    <!--android:id="@+id/scale"-->
+    <!--android:background="@drawable/scale"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="Hello World!" />-->
 
     <!--<ImageView-->
-        <!--android:id="@+id/arrow"-->
-        <!--android:layout_centerInParent="true"-->
-        <!--android:layout_width="50dp"-->
-        <!--android:background="@drawable/arrow"-->
-        <!--android:layout_height="140dp" />-->
-
+    <!--android:id="@+id/arrow"-->
+    <!--android:layout_centerInParent="true"-->
+    <!--android:layout_width="50dp"-->
+    <!--android:background="@drawable/arrow"-->
+    <!--android:layout_height="140dp" />-->
 
 
     <!--<Button-->
-        <!--android:id="@+id/go"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="Rotate"/>-->
+    <!--android:id="@+id/go"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="Rotate"/>-->
 
     <FrameLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
+
+    <android.inputmethodservice.KeyboardView
+        android:id="@+id/keyboardview"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:visibility="gone" />
+
 </RelativeLayout>

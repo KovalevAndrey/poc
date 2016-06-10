@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.pointrfsystems.poc.data.LocalRepository;
+import com.pointrfsystems.poc.views.CustomKeyboard;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -27,6 +28,14 @@ public class BleidFragment extends Fragment {
     EditText bleid_edit;
 
     private LocalRepository localRepository;
+
+    CustomKeyboard mCustomKeyboard;
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        bleid_edit.requestFocus();
+    }
 
     @Nullable
     @Override
@@ -51,7 +60,7 @@ public class BleidFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length()==0) {
+                if (s.length() == 0) {
                     enter_bleid.setText(getString(R.string.enter_bleid));
                     enter_bleid.setEnabled(false);
                 } else {
@@ -65,6 +74,19 @@ public class BleidFragment extends Fragment {
 
             }
         });
+        mCustomKeyboard = new CustomKeyboard(getActivity(), view, R.id.keyboardview, R.xml.hexkbd);
+
+        mCustomKeyboard.registerEditText(R.id.blied_edit);
+
+
         return view;
+    }
+
+    public boolean isCustomKeyboardVisible() {
+        return mCustomKeyboard.isCustomKeyboardVisible();
+    }
+
+    public void hideCustomKeyboard() {
+        mCustomKeyboard.hideCustomKeyboard();
     }
 }
