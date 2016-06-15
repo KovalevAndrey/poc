@@ -35,7 +35,7 @@ public class CustomKeyboard {
         @Override
         public void onKey(int primaryCode, int[] keyCodes) {
             View focusCurrent = mHostActivity.getWindow().getCurrentFocus();
-//            if (focusCurrent == null || focusCurrent.getClass() != AppCompatEditText.class) return;
+            if (focusCurrent == null || focusCurrent.getClass() != AppCompatEditText.class) return;
             EditText edittext = (EditText) focusCurrent;
             Editable editable = edittext.getText();
             int start = edittext.getSelectionStart();
@@ -107,7 +107,7 @@ public class CustomKeyboard {
     }
 
     public void registerEditText(int resid) {
-        EditText edittext = (EditText) rootView.findViewById(resid);
+        final EditText edittext = (EditText) rootView.findViewById(resid);
 
         edittext.setOnFocusChangeListener(new OnFocusChangeListener() {
             // NOTE By setting the on focus listener, we can show the custom keyboard when the edit box gets focus, but also hide it when the edit box loses focus
@@ -121,6 +121,7 @@ public class CustomKeyboard {
             // NOTE By setting the on click listener, we can show the custom keyboard again, by tapping on an edit box that already had focus (but that had the keyboard hidden).
             @Override
             public void onClick(View v) {
+                edittext.setSelection(edittext.getText().length());
                 showCustomKeyboard(v);
             }
         });
