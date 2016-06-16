@@ -46,9 +46,7 @@ public class BleidFragment extends Fragment {
         enter_bleid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String bleid = bleid_edit.getText().toString();
-                localRepository.storeBleid(bleid);
-                ((MainActivity) getActivity()).showTrackingFragment(bleid);
+                goToTracking();
             }
         });
         enter_bleid.setEnabled(false);
@@ -74,7 +72,12 @@ public class BleidFragment extends Fragment {
 
             }
         });
-        mCustomKeyboard = new CustomKeyboard(getActivity(), view, R.id.keyboardview, R.xml.hexkbd);
+        mCustomKeyboard = new CustomKeyboard(getActivity(), view, R.id.keyboardview, R.xml.hexkbd, new EnterBleidListener() {
+            @Override
+            public void onClick() {
+                goToTracking();
+            }
+        });
 
         mCustomKeyboard.registerEditText(R.id.blied_edit);
 
@@ -82,11 +85,23 @@ public class BleidFragment extends Fragment {
         return view;
     }
 
+    private void goToTracking() {
+        String bleid = bleid_edit.getText().toString();
+        localRepository.storeBleid(bleid);
+        ((MainActivity) getActivity()).showTrackingFragment(bleid);
+    }
+
+
     public boolean isCustomKeyboardVisible() {
         return mCustomKeyboard.isCustomKeyboardVisible();
     }
 
     public void hideCustomKeyboard() {
         mCustomKeyboard.hideCustomKeyboard();
+    }
+
+    public interface EnterBleidListener {
+
+        void onClick();
     }
 }

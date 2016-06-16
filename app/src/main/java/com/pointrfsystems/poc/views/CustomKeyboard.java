@@ -17,6 +17,9 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+import com.pointrfsystems.poc.BleidFragment;
+import com.pointrfsystems.poc.MainActivity;
+
 /**
  * Created by a.kovalev on 10.06.16.
  */
@@ -25,12 +28,14 @@ public class CustomKeyboard {
     private KeyboardView mKeyboardView;
     private Activity mHostActivity;
     private View rootView;
+    private BleidFragment.EnterBleidListener listener;
 
     private OnKeyboardActionListener mOnKeyboardActionListener = new OnKeyboardActionListener() {
 
         public final static int CodeDelete = -5; // Keyboard.KEYCODE_DELETE
         public final static int CodeCancel = -3; // Keyboard.KEYCODE_CANCEL
         public final static int CodeClear = 55006;
+        public final static int CodeEnter = 69;
 
         @Override
         public void onKey(int primaryCode, int[] keyCodes) {
@@ -45,6 +50,8 @@ public class CustomKeyboard {
                 if (editable != null && start > 0) editable.delete(start - 1, start);
             } else if (primaryCode == CodeClear) {
                 if (editable != null) editable.clear();
+            } else if (primaryCode == CodeEnter) {
+                listener.onClick();
             } else { // insert character
                 editable.insert(start, Character.toString((char) primaryCode));
             }
@@ -79,7 +86,7 @@ public class CustomKeyboard {
         }
     };
 
-    public CustomKeyboard(Activity host, View view, int viewid, int layoutid) {
+    public CustomKeyboard(Activity host, View view, int viewid, int layoutid, BleidFragment.EnterBleidListener listener) {
         mHostActivity = host;
         rootView = view;
         mKeyboardView = (KeyboardView) mHostActivity.findViewById(viewid);
@@ -88,6 +95,7 @@ public class CustomKeyboard {
         mKeyboardView.setOnKeyboardActionListener(mOnKeyboardActionListener);
         // Hide the standard keyboard initially
         mHostActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        this.listener = listener;
     }
 
     public boolean isCustomKeyboardVisible() {

@@ -8,4 +8,10 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+
+    <style name="passcode_button">
+        <item name="android:width">50dp</item>
+        <item name="android:height">50dp</item>
+    </style>
+
 </resources>

@@ -88,7 +88,7 @@
             android:text="@string/passcode_incorrect"
             android:textColor="@color/white"
             android:textSize="14sp"
-            android:visibility="gone" />
+            android:visibility="invisible" />
 
         <RelativeLayout
             android:id="@+id/row_1"
@@ -100,8 +100,8 @@
 
             <TextView
                 android:id="@+id/number_1"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:background="@drawable/circle"
                 android:gravity="center"
                 android:text="1"
@@ -110,8 +110,8 @@
 
             <TextView
                 android:id="@+id/number_2"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_marginLeft="15dp"
                 android:layout_toRightOf="@+id/number_1"
                 android:background="@drawable/circle"
@@ -122,8 +122,8 @@
 
             <TextView
                 android:id="@+id/number_3"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_marginLeft="15dp"
                 android:layout_toRightOf="@+id/number_2"
                 android:background="@drawable/circle"
@@ -134,8 +134,8 @@
 
             <TextView
                 android:id="@+id/number_a"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_marginLeft="15dp"
                 android:layout_toRightOf="@+id/number_3"
                 android:background="@drawable/circle"
@@ -156,8 +156,8 @@
 
             <TextView
                 android:id="@+id/number_4"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:background="@drawable/circle"
                 android:gravity="center"
                 android:text="4"
@@ -166,8 +166,8 @@
 
             <TextView
                 android:id="@+id/number_5"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_marginLeft="15dp"
                 android:layout_toRightOf="@+id/number_4"
                 android:background="@drawable/circle"
@@ -178,8 +178,8 @@
 
             <TextView
                 android:id="@+id/number_6"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_marginLeft="15dp"
                 android:layout_toRightOf="@+id/number_5"
                 android:background="@drawable/circle"
@@ -190,8 +190,8 @@
 
             <TextView
                 android:id="@+id/number_b"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_marginLeft="15dp"
                 android:layout_toRightOf="@+id/number_6"
                 android:background="@drawable/circle"
@@ -212,8 +212,8 @@
 
             <TextView
                 android:id="@+id/number_7"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:background="@drawable/circle"
                 android:gravity="center"
                 android:text="7"
@@ -222,8 +222,8 @@
 
             <TextView
                 android:id="@+id/number_8"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_marginLeft="15dp"
                 android:layout_toRightOf="@+id/number_7"
                 android:background="@drawable/circle"
@@ -234,8 +234,8 @@
 
             <TextView
                 android:id="@+id/number_9"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_marginLeft="15dp"
                 android:layout_toRightOf="@+id/number_8"
                 android:background="@drawable/circle"
@@ -246,8 +246,8 @@
 
             <TextView
                 android:id="@+id/number_c"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_marginLeft="15dp"
                 android:layout_toRightOf="@+id/number_9"
                 android:background="@drawable/circle"
@@ -258,8 +258,9 @@
 
             <TextView
                 android:id="@+id/number_0"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_alignLeft="@id/number_8"
                 android:layout_below="@+id/number_8"
                 android:layout_marginTop="15dp"
@@ -271,8 +272,8 @@
 
             <TextView
                 android:id="@+id/number_d"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_alignLeft="@id/number_c"
                 android:layout_below="@+id/number_c"
                 android:layout_marginTop="15dp"

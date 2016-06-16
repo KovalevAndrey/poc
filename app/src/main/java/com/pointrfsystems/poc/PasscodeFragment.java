@@ -224,20 +224,22 @@ public class PasscodeFragment extends Fragment {
     }
 
     private void addDigit(char digit) {
-        if (password.length() >= 5) {
+        if (password.length() > 5) {
             return;
         }
-        if ((digit > 47 && digit < 58) && password.length() < 4) {
-            password.append(digit);
-        }
-        if ((digit > 64 && digit < 69) && password.length() == 4) {
+        if (password.length() < 5) {
             password.append(digit);
         }
 
         if (password.length() == 5) {
-            checkPassword();
-            if (!Utils.isNetworkAvailable(getContext())) {
-                ((MainActivity) getActivity()).showToast(getString(R.string.network_error));
+            if (passcode_warning.getVisibility() == View.VISIBLE) {
+                password.delete(0,4);
+                passcode_warning.setVisibility(View.INVISIBLE);
+            } else {
+                checkPassword();
+                if (!Utils.isNetworkAvailable(getContext())) {
+                    ((MainActivity) getActivity()).showToast(getString(R.string.network_error));
+                }
             }
         }
         checkVisibility();
@@ -328,7 +330,7 @@ public class PasscodeFragment extends Fragment {
         password.deleteCharAt(password.length() - 1);
         checkVisibility();
         if (passcode_warning.getVisibility() == View.VISIBLE) {
-            passcode_warning.setVisibility(View.GONE);
+            passcode_warning.setVisibility(View.INVISIBLE);
         }
     }
 }
