@@ -109,6 +109,7 @@ public class PasscodeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_passcode, container, false);
         ButterKnife.bind(this, view);
+        ((MainActivity) getActivity()).setStatusBarColor(R.color.colorPrimary);
         bleid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

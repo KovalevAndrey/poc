@@ -8,6 +8,8 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -42,6 +44,10 @@ public class BleidFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_bleid, container, false);
         ButterKnife.bind(this, view);
+        ((MainActivity) getActivity()).setToolbarVisibility(true);
+        ((MainActivity) getActivity()).setToolbarName("BLEID");
+
+        ((MainActivity) getActivity()).setStatusBarColor(R.color.toolbar_background);
         localRepository = LocalRepository.getInstance(getContext());
         enter_bleid.setOnClickListener(new View.OnClickListener() {
             @Override

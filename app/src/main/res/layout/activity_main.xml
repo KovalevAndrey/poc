@@ -6,13 +6,25 @@
     tools:context="com.pointrfsystems.poc.MainActivity">
 
     <android.support.v7.widget.Toolbar
+        android:id="@+id/action_bar_my"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="?android:actionBarSize"
+        android:background="@color/toolbar_background">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+    </android.support.v7.widget.Toolbar>
 
     <FrameLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_below="@+id/action_bar_my" />
 
     <android.inputmethodservice.KeyboardView
         android:id="@+id/keyboardview"

@@ -1,5 +1,6 @@
 package com.pointrfsystems.poc;
 
+import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,9 +12,17 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pointrfsystems.poc.views.RegistrationFragment;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -21,6 +30,11 @@ public class MainActivity extends AppCompatActivity {
     public static final long DISCONNECT_TIMEOUT = 30000;
     private BroadcastReceiver mReceiver;
     private boolean isScreenOn = true;
+
+    @Bind(R.id.action_bar_my)
+    Toolbar toolbar;
+    @Bind(R.id.title)
+    TextView title;
 
     private Handler disconnectHandler = new Handler() {
         public void handleMessage(Message msg) {
@@ -80,17 +94,41 @@ public class MainActivity extends AppCompatActivity {
         stopDisconnectTimer();
     }
 
+    public void setToolbarName(String name) {
+        toolbar.setTitle(name);
+    }
+
+    public void setToolbarVisibility(boolean isVisible) {
+        if (isVisible) {
+            toolbar.setVisibility(View.VISIBLE);
+        } else {
+            toolbar.setVisibility(View.GONE);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
         replace(new PasscodeFragment());
+        setSupportActionBar(toolbar);
 
+
+        toolbar.setVisibility(View.GONE);
+        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         mReceiver = new ScreenReceiver();
         registerReceiver(mReceiver, filter);
+    }
+
+    @TargetApi(21)
+    public void setStatusBarColor(int color) {
+        Window window = getWindow();
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(getResources().getColor(color));
     }
 
     @Override
