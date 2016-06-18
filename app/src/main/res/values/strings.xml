@@ -10,8 +10,18 @@
     <string name="network_error">No network is available</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
-    <string name="registration">Registration</string>
+    <string name="registration">Register</string>
     <string name="register_device">Register device</string>
     <string name="clear">Clear</string>
+    <string name="ws_url">WS URL</string>
+    <string name="vibrate_ring">Vibrate on Ring</string>
+    <string name="vibrate_silent">Vibrate on Silent</string>
+    <string name="facility_logo">Facility Logo</string>
+    <string name="pointrf_logo">PointRF Logo</string>
+    <string name="nw_logo">NW Logo</string>
+    <string name="upload">Upload Image</string>
+    <string name="user_hint">Enter your username</string>
+    <string name="password_hint">Enter your password</string>
+
 
 </resources>

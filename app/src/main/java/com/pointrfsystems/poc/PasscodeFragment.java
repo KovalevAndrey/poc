@@ -1,35 +1,27 @@
 package com.pointrfsystems.poc;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.support.annotation.MainThread;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.pointrfsystems.poc.data.LocalRepository;
 import com.pointrfsystems.poc.utils.Utils;
-
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
 
 /**
  * Created by an.kovalev on 04.05.2016.
@@ -93,8 +85,12 @@ public class PasscodeFragment extends Fragment {
     View passcode_4;
     @Bind(R.id.passcode_5)
     View passcode_5;
-    @Bind(R.id.logo_top)
-    ImageView logo_top;
+    @Bind(R.id.nw_image)
+    ImageView nw_image;
+    @Bind(R.id.facility_image)
+    ImageView facility_image;
+    @Bind(R.id.pointrf_image)
+    ImageView pointrf_image;
     @Bind(R.id.passcode_warning)
     TextView passcode_warning;
 
@@ -213,8 +209,9 @@ public class PasscodeFragment extends Fragment {
             }
         });
 
-        sevenClicks = RxView.clicks(logo_top).skip(6);
+        sevenClicks = RxView.clicks(nw_image).skip(6);
 
+        resolveBitmap();
         return view;
     }
 
@@ -222,6 +219,32 @@ public class PasscodeFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         localRepository = LocalRepository.getInstance(getContext());
+    }
+
+    private void resolveBitmap() {
+        String path = localRepository.getPointRfPath();
+        if (!path.equals("")) {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+            Bitmap bitmap = BitmapFactory.decodeFile(path, options);
+            pointrf_image.setImageBitmap(bitmap);
+        }
+
+        String path1 = localRepository.getNowanderPath();
+        if (!path.equals("")) {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+            Bitmap bitmap = BitmapFactory.decodeFile(path1, options);
+            nw_image.setImageBitmap(bitmap);
+        }
+
+        String path2 = localRepository.getFacilityPath();
+        if (!path.equals("")) {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+            Bitmap bitmap = BitmapFactory.decodeFile(path2, options);
+            facility_image.setImageBitmap(bitmap);
+        }
     }
 
     private void addDigit(char digit) {

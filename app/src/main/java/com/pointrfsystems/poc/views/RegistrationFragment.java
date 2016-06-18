@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import com.pointrfsystems.poc.MainActivity;
 import com.pointrfsystems.poc.R;
 
 import butterknife.Bind;
@@ -35,6 +36,10 @@ public class RegistrationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_registration, container, false);
         ButterKnife.bind(this, view);
+
+        ((MainActivity) getActivity()).setStatusBarColor(R.color.toolbar_background);
+        ((MainActivity) getActivity()).setToolbarVisibility(true);
+        ((MainActivity) getActivity()).setToolbarName("Registration");
         return view;
     }
 }

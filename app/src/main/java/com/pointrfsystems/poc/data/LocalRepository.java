@@ -16,8 +16,10 @@ public class LocalRepository {
     private static final String BLEID = "BLEID";
     private static final String POINTRF = "POINTRF";
     private static final String NOWANDER = "NOWANDER";
+    private static final String FACILITY = "FACILITY";
     private static final String API = "API";
-    private static final String VOLUME = "VOLUME";
+    private static final String RING = "RING";
+    private static final String SILENT = "SILENT";
     public static final int VIBRO = 0;
     public static final int MUTE = 1;
     public static final int NORMAL = 2;
@@ -76,14 +78,25 @@ public class LocalRepository {
     }
 
 
-    public synchronized void storeVolumeSettings(int volume) {
+    public synchronized void storeIsRingChecked(boolean isChecked) {
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putInt(VOLUME, volume);
+        editor.putBoolean(RING, isChecked);
         editor.apply();
     }
 
-    public synchronized int getVolumeSettings() {
-        return preferences.getInt(VOLUME, 2);
+    public synchronized boolean getIsRingChecked() {
+        return preferences.getBoolean(RING, false);
+    }
+
+
+    public synchronized void storeIsSilentChecked(boolean isChecked) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean(SILENT, isChecked);
+        editor.apply();
+    }
+
+    public synchronized boolean getIsSilentChecked() {
+        return preferences.getBoolean(SILENT, false);
     }
 
 
@@ -107,6 +120,16 @@ public class LocalRepository {
 
     public synchronized boolean isAppRegistred() {
         return preferences.getBoolean(IS_REGISTRED, false);
+    }
+
+    public synchronized void storeFacilityPath(String path) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(FACILITY, path);
+        editor.apply();
+    }
+
+    public synchronized String getFacilityPath() {
+        return preferences.getString(FACILITY, "");
     }
 }
 

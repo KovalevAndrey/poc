@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -14,20 +13,18 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.pointrfsystems.poc.data.LocalRepository;
 import com.pointrfsystems.poc.utils.Utils;
-import com.pointrfsystems.poc.views.EditLinkFragment;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -45,29 +42,24 @@ public class SettingsFragment extends Fragment implements DialogInterface.OnDism
 
     @Bind(R.id.link)
     TextView link;
-    @Bind(R.id.edit_link)
-    Button edit_link;
-    @Bind(R.id.logo_pointrf)
-    ImageView logo_pointrf;
-    @Bind(R.id.logo_nowander)
-    ImageView logo_nowander;
-    @Bind(R.id.pick_image_pontrf)
-    Button image_pick_pointrf;
-    @Bind(R.id.pick_image_nowander)
-    Button image_pick_nowander;
-    @Bind(R.id.mute)
-    RadioButton mute;
-    @Bind(R.id.vibro)
-    RadioButton vibro;
-    @Bind(R.id.normal)
-    RadioButton normal;
-    @Bind(R.id.radio)
-    RadioGroup radioGroup;
+    @Bind(R.id.edittext)
+    EditText editText;
+    @Bind(R.id.facility_upload)
+    Button facility_upload;
+    @Bind(R.id.pointrf_upload)
+    Button pointrf_upload;
+    @Bind(R.id.nw_upload)
+    Button nw_upload;
     @Bind(R.id.register_device)
     Button register_device;
+    @Bind(R.id.ring_checkbox)
+    CheckBox ring_checkbox;
+    @Bind(R.id.silent_checkbox)
+    CheckBox silent_checkbox;
 
     private static int POINT_RF_IMAGE = 0;
     private static int NO_WANDER = 1;
+    private static int FACILITY = 1;
 
     private String userChosenTask;
 
@@ -97,45 +89,47 @@ public class SettingsFragment extends Fragment implements DialogInterface.OnDism
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
         ButterKnife.bind(this, view);
-        image_pick_pointrf.setOnClickListener(new View.OnClickListener() {
+        facility_upload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                currentImage = FACILITY;
+                selectImage();
+            }
+        });
+
+        ((MainActivity) getActivity()).setStatusBarColor(R.color.toolbar_background);
+        ((MainActivity) getActivity()).setToolbarVisibility(true);
+        ((MainActivity) getActivity()).setToolbarName("Settings");
+
+        nw_upload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                currentImage = NO_WANDER;
+                selectImage();
+            }
+        });
+
+        pointrf_upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 currentImage = POINT_RF_IMAGE;
                 selectImage();
             }
         });
-        image_pick_nowander.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                 currentImage = NO_WANDER;
-                selectImage();
-            }
-        });
-        resolveBitmap();
         resolveVolume();
         resolveLink();
 
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        ring_checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                int id;
-                if (checkedId == mute.getId()) {
-                    id = LocalRepository.MUTE;
-                } else if (checkedId == vibro.getId()) {
-                    id = LocalRepository.VIBRO;
-                } else {
-                    id = LocalRepository.NORMAL;
-                }
-                localRepository.storeVolumeSettings(id);
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                localRepository.storeIsRingChecked(isChecked);
             }
         });
 
-        edit_link.setOnClickListener(new View.OnClickListener() {
+        silent_checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                FragmentManager fm = getChildFragmentManager();
-                EditLinkFragment editLinkFragment = EditLinkFragment.newInstance(link.getText().toString());
-                editLinkFragment.show(fm, "edit_link");
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                localRepository.storeIsSilentChecked(isChecked);
             }
         });
 
@@ -154,34 +148,8 @@ public class SettingsFragment extends Fragment implements DialogInterface.OnDism
     }
 
     private void resolveVolume() {
-        int settingsVolume = localRepository.getVolumeSettings();
-
-        if (settingsVolume == LocalRepository.MUTE) {
-            radioGroup.check(mute.getId());
-        } else if (settingsVolume == LocalRepository.VIBRO) {
-            radioGroup.check(vibro.getId());
-        } else if (settingsVolume == LocalRepository.NORMAL) {
-            radioGroup.check(normal.getId());
-        }
-
-    }
-
-    private void resolveBitmap() {
-        String path = localRepository.getPointRfPath();
-        if (!path.equals("")) {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-            Bitmap bitmap = BitmapFactory.decodeFile(path, options);
-            logo_pointrf.setImageBitmap(bitmap);
-        }
-
-        String path1 = localRepository.getNowanderPath();
-        if (!path.equals("")) {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-            Bitmap bitmap = BitmapFactory.decodeFile(path1, options);
-            logo_nowander.setImageBitmap(bitmap);
-        }
+        ring_checkbox.setChecked(localRepository.getIsRingChecked());
+        silent_checkbox.setChecked(localRepository.getIsSilentChecked());
     }
 
     @Override
@@ -222,18 +190,14 @@ public class SettingsFragment extends Fragment implements DialogInterface.OnDism
                 String path = getRealPathFromURI(uri);
                 if (currentImage == POINT_RF_IMAGE)
                     localRepository.storePointrfPath(path);
-                else
+                else if (currentImage == NO_WANDER)
                     localRepository.storeNowanderPath(path);
+                else
+                    localRepository.storeFacilityPath(path);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        if (currentImage == POINT_RF_IMAGE) {
-            logo_pointrf.setImageBitmap(bitmap);
-        } else {
-            logo_nowander.setImageBitmap(bitmap);
-        }
-
     }
 
     private String getRealPathFromURI(Uri contentUri) {
@@ -271,14 +235,14 @@ public class SettingsFragment extends Fragment implements DialogInterface.OnDism
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        if (currentImage == POINT_RF_IMAGE) {
-            localRepository.storePointrfPath(destionation.getPath());
-            logo_pointrf.setImageBitmap(thumbnail);
-        } else {
-            localRepository.storeNowanderPath(destionation.getPath());
-            logo_nowander.setImageBitmap(thumbnail);
-        }
+//
+//        if (currentImage == POINT_RF_IMAGE) {
+//            localRepository.storePointrfPath(destionation.getPath());
+//            logo_pointrf.setImageBitmap(thumbnail);
+//        } else {
+//            localRepository.storeNowanderPath(destionation.getPath());
+//            logo_nowander.setImageBitmap(thumbnail);
+//        }
     }
 
 

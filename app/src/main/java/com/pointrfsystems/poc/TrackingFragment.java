@@ -62,7 +62,7 @@ public class TrackingFragment extends Fragment {
     private UsbService usbService;
     private SoundPlayer soundPlayer;
 
-    int sound;
+    private boolean isSilent;
 
     private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
         @Override
@@ -128,6 +128,10 @@ public class TrackingFragment extends Fragment {
         localRepository = LocalRepository.getInstance(getContext());
         bleid = getArguments().getString(BLEID);
 
+        ((MainActivity) getActivity()).setStatusBarColor(R.color.toolbar_background);
+        ((MainActivity) getActivity()).setToolbarVisibility(true);
+        ((MainActivity) getActivity()).setToolbarName("BLE ID: " + bleid);
+
         if (bleid == null || bleid.isEmpty()) {
             shouldCompare = false;
         } else {
@@ -142,13 +146,13 @@ public class TrackingFragment extends Fragment {
             }
         });
 
-        if (localRepository.getVolumeSettings() == LocalRepository.MUTE) {
-            sound = LocalRepository.MUTE;
+        if (localRepository.getIsSilentChecked()) {
+            isSilent = true;
         } else {
-            sound = LocalRepository.NORMAL;
+            isSilent = false;
         }
 
-        if (sound == LocalRepository.MUTE) {
+        if (isSilent) {
             sound_image.setBackground(getResources().getDrawable(R.drawable.mute_image));
         } else {
             sound_image.setBackground(getResources().getDrawable(R.drawable.unmute_image));
@@ -158,12 +162,12 @@ public class TrackingFragment extends Fragment {
         sound_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (sound == LocalRepository.MUTE) {
+                if (isSilent) {
                     sound_image.setBackground(getResources().getDrawable(R.drawable.unmute_image));
-                    sound = LocalRepository.NORMAL;
+                    isSilent = false;
                 } else {
                     sound_image.setBackground(getResources().getDrawable(R.drawable.mute_image));
-                    sound = LocalRepository.MUTE;
+                    isSilent = true;
                 }
             }
         });
@@ -196,7 +200,7 @@ public class TrackingFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        localRepository.storeVolumeSettings(sound);
+        localRepository.storeIsSilentChecked(isSilent);
         getActivity().unregisterReceiver(mUsbReceiver);
         getActivity().unbindService(usbConnection);
         Intent stopService = new Intent(getContext(), UsbService.class);
@@ -298,13 +302,13 @@ public class TrackingFragment extends Fragment {
                         String blied = mFragment.get().bleid;
                         if (data.getBleId().equals(blied)) {
                             mFragment.get().diagramAnimator.animateView(data.getRssi());
-                            if (mFragment.get().soundPlayer != null && mFragment.get().sound != LocalRepository.MUTE) {
+                            if (mFragment.get().soundPlayer != null && mFragment.get().isSilent) {
                                 mFragment.get().soundPlayer.setFrequency(data.getRssi());
                             }
                         }
                     } else {
                         mFragment.get().diagramAnimator.animateView(data.getRssi());
-                        if (mFragment.get().soundPlayer != null && mFragment.get().sound != LocalRepository.MUTE) {
+                        if (mFragment.get().soundPlayer != null && mFragment.get().isSilent) {
                             mFragment.get().soundPlayer.setFrequency(data.getRssi());
                         }
                     }
