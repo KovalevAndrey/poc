@@ -9,7 +9,7 @@
         android:layout_width="120dp"
         android:layout_height="60dp"
         android:layout_alignParentTop="true"
-        android:background="@drawable/no_wander_logo_center" />
+        android:scaleType="fitXY" />
 
     <RelativeLayout
         android:id="@+id/passcode"
@@ -25,7 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="10dp"
             android:text="Enter Passcode"
             android:textColor="@android:color/white"
             android:textSize="25sp" />
@@ -289,14 +289,14 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true">
+            android:layout_below="@id/row_3"
+            android:layout_marginTop="25dp">
 
             <TextView
                 android:id="@+id/blied"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:layout_marginBottom="30dp"
                 android:layout_marginLeft="30dp"
                 android:text="BLEID"
                 android:textColor="@android:color/white"
@@ -307,7 +307,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_marginBottom="30dp"
                 android:layout_marginRight="30dp"
                 android:text="Delete"
                 android:textColor="@android:color/white"
@@ -330,7 +329,7 @@
             android:layout_height="60dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:background="@drawable/pintrf_logo" />
+            android:scaleType="fitXY" />
 
         <ImageView
             android:id="@+id/facility_image"
@@ -338,7 +337,7 @@
             android:layout_height="60dp"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            android:background="@drawable/no_wander_logo" />
+            android:scaleType="fitXY" />
     </RelativeLayout>
 
 

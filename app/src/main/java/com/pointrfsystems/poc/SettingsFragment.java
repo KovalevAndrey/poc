@@ -38,9 +38,9 @@ import butterknife.ButterKnife;
 /**
  * Created by a.kovalev on 23.05.16.
  */
-public class SettingsFragment extends Fragment implements DialogInterface.OnDismissListener {
+public class SettingsFragment extends Fragment {
 
-    @Bind(R.id.link)
+    @Bind(R.id.link1)
     TextView link;
     @Bind(R.id.edittext)
     EditText editText;
@@ -59,7 +59,7 @@ public class SettingsFragment extends Fragment implements DialogInterface.OnDism
 
     private static int POINT_RF_IMAGE = 0;
     private static int NO_WANDER = 1;
-    private static int FACILITY = 1;
+    private static int FACILITY = 2;
 
     private String userChosenTask;
 
@@ -77,11 +77,6 @@ public class SettingsFragment extends Fragment implements DialogInterface.OnDism
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         localRepository = LocalRepository.getInstance(getContext());
-    }
-
-    @Override
-    public void onDismiss(DialogInterface dialog) {
-        link.setText(localRepository.getApiLink());
     }
 
     @Nullable
@@ -116,8 +111,7 @@ public class SettingsFragment extends Fragment implements DialogInterface.OnDism
                 selectImage();
             }
         });
-        resolveVolume();
-        resolveLink();
+
 
         ring_checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -143,8 +137,22 @@ public class SettingsFragment extends Fragment implements DialogInterface.OnDism
         return view;
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        localRepository.storeApiLink(editText.getText().toString());
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        resolveLink();
+        resolveVolume();
+    }
+
     private void resolveLink() {
-        link.setText(localRepository.getApiLink());
+        editText.setText(localRepository.getApiLink());
     }
 
     private void resolveVolume() {

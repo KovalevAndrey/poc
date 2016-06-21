@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.pointrfsystems.poc.R;
-import com.pointrfsystems.poc.SettingsFragment;
 import com.pointrfsystems.poc.data.LocalRepository;
 
 import butterknife.Bind;
@@ -76,6 +75,5 @@ public class EditLinkFragment extends DialogFragment {
     @Override
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
-        ((SettingsFragment) getParentFragment()).onDismiss(dialog);
     }
 }

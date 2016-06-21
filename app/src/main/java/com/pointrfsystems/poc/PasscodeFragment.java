@@ -211,9 +211,9 @@ public class PasscodeFragment extends Fragment {
 
         sevenClicks = RxView.clicks(nw_image).skip(6);
 
-        resolveBitmap();
         return view;
     }
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -228,22 +228,28 @@ public class PasscodeFragment extends Fragment {
             options.inPreferredConfig = Bitmap.Config.ARGB_8888;
             Bitmap bitmap = BitmapFactory.decodeFile(path, options);
             pointrf_image.setImageBitmap(bitmap);
+        } else {
+            pointrf_image.setBackground(getContext().getResources().getDrawable(R.drawable.pintrf_logo));
         }
 
         String path1 = localRepository.getNowanderPath();
-        if (!path.equals("")) {
+        if (!path1.equals("")) {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inPreferredConfig = Bitmap.Config.ARGB_8888;
             Bitmap bitmap = BitmapFactory.decodeFile(path1, options);
             nw_image.setImageBitmap(bitmap);
+        } else {
+            nw_image.setBackground(getContext().getResources().getDrawable(R.drawable.no_wander_logo));
         }
 
         String path2 = localRepository.getFacilityPath();
-        if (!path.equals("")) {
+        if (!path2.equals("")) {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inPreferredConfig = Bitmap.Config.ARGB_8888;
             Bitmap bitmap = BitmapFactory.decodeFile(path2, options);
             facility_image.setImageBitmap(bitmap);
+        } else {
+            facility_image.setBackground(getContext().getResources().getDrawable(R.drawable.facility_logo));
         }
     }
 
@@ -257,7 +263,7 @@ public class PasscodeFragment extends Fragment {
 
         if (password.length() == 5) {
             if (passcode_warning.getVisibility() == View.VISIBLE) {
-                password.delete(0,4);
+                password.delete(0, 4);
                 passcode_warning.setVisibility(View.INVISIBLE);
             } else {
                 checkPassword();
@@ -282,6 +288,7 @@ public class PasscodeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        resolveBitmap();
         subscription = sevenClicks.subscribe(new Subscriber<Void>() {
             @Override
             public void onCompleted() {
