@@ -1,4 +1,4 @@
-package com.pointrfsystems.poc;
+package com.pointrfsystems.mtu;
 
 import org.junit.Test;
 
