@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.pointrfsystems.mtu.data.LocalRepository;
 import com.pointrfsystems.mtu.views.CustomKeyboard;
@@ -91,6 +92,11 @@ public class BleidFragment extends Fragment {
 
     private void goToTracking() {
         String bleid = bleid_edit.getText().toString();
+
+        if (bleid.length() < 4) {
+            Toast.makeText(getContext(), "Invalid BLE ID message", Toast.LENGTH_LONG).show();
+            return;
+        }
         localRepository.storeBleid(bleid);
         ((MainActivity) getActivity()).showTrackingFragment(bleid);
     }

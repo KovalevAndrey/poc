@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.media.AudioManager;
+import android.media.ToneGenerator;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -59,6 +61,9 @@ public class TrackingFragment extends Fragment {
     LocalRepository localRepository;
     private UsbService usbService;
     private SoundPlayer soundPlayer;
+
+    private int currentRssi;
+    private Thread soundThread;
 
     private boolean isSilent;
 
@@ -174,12 +179,56 @@ public class TrackingFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         soundPlayer = new SoundPlayer();
+        soundThread = new Thread() {
+
+            public void run() {
+
+                ToneGenerator toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
+                int minFreq = 20;
+                int maxFreq = 1000 + minFreq;
+                int delta = maxFreq - minFreq;
+                long counter = 0;
+
+
+// MainActivity.currRssiPrecentage is a precentage value (0-100) representing the precentage of cuurnet RSSI reading with relation to the min-max tracking bar
+
+                while (true) {
+
+                    try {
+
+                        Thread.sleep(minFreq);
+
+                        if (getCurrentRssiPersantage() < 0)
+                            continue;
+                        counter += minFreq;
+
+                        long s = (long) (delta * (float) ((100 - getCurrentRssiPersantage()) / 100.0));
+
+                        if (counter >= s) {
+                            toneGen1.startTone(ToneGenerator.TONE_PROP_BEEP, 100);
+                            counter = 0;
+                        }
+
+                    } catch (InterruptedException e) {
+
+                    }
+
+                }
+            }
+        };
+
+       // soundThread.start();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         soundPlayer.release();
+        soundThread.interrupt();
+    }
+
+    private int getCurrentRssiPersantage() {
+        return (currentRssi + 93) / 60 * 100;
     }
 
     @Override
@@ -287,6 +336,9 @@ public class TrackingFragment extends Fragment {
                     //parser.newData(data.getBytes(), data.length());
 
                     //mFragment.get().display.append(data);
+
+                    mFragment.get().currentRssi = data.getRssi();
+
 
                     if (mFragment.get().shouldCompare) {
                         String blied = mFragment.get().bleid;
