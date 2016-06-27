@@ -13,6 +13,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.CursorLoader;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -190,35 +191,28 @@ public class SettingsFragment extends Fragment {
     }
 
     private void onSelectFromGalleryResult(Intent data) {
-        Bitmap bitmap = null;
         if (data != null) {
-            try {
-                bitmap = Bitmap.createBitmap(MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), data.getData()));
-                Uri uri = data.getData();
-                String path = getRealPathFromURI(uri);
-                if (currentImage == POINT_RF_IMAGE)
-                    localRepository.storePointrfPath(path);
-                else if (currentImage == NO_WANDER)
-                    localRepository.storeNowanderPath(path);
-                else
-                    localRepository.storeFacilityPath(path);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            Uri uri = data.getData();
+            String path = getRealPathFromURI(uri);
+
+            if (currentImage == POINT_RF_IMAGE)
+                localRepository.storePointrfPath(path);
+            else if (currentImage == NO_WANDER)
+                localRepository.storeNowanderPath(path);
+            else
+                localRepository.storeFacilityPath(path);
+
         }
     }
 
     private String getRealPathFromURI(Uri contentUri) {
-        String result;
-        Cursor cursor = getContext().getContentResolver().query(contentUri, null, null, null, null);
-        if (cursor == null) {
-            result = contentUri.getPath();
-        } else {
-            cursor.moveToFirst();
-            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-            result = cursor.getString(idx);
-            cursor.close();
-        }
+        String[] proj = {MediaStore.Images.Media.DATA};
+        CursorLoader loader = new CursorLoader(getContext(), contentUri, proj, null, null, null);
+        Cursor cursor = loader.loadInBackground();
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        String result = cursor.getString(column_index);
+        cursor.close();
         return result;
     }
 

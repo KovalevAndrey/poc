@@ -12,8 +12,9 @@ public class SoundPlayer {
     private boolean isReleased;
 
     public void setFrequency(int rssi) {
-        if (!isReleased)
-            toneGenerator.startTone(transformRssiToFrequency(rssi), 500);
+        if (!isReleased) {
+            toneGenerator.startTone(ToneGenerator.TONE_PROP_BEEP, 150);
+        }
     }
 
     public SoundPlayer() {
@@ -27,7 +28,6 @@ public class SoundPlayer {
             return ToneGenerator.TONE_SUP_ERROR;
         }
     }
-
 
     public void release() {
         isReleased = true;

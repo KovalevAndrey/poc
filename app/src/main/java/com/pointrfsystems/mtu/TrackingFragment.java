@@ -205,19 +205,21 @@ public class TrackingFragment extends Fragment {
                         long s = (long) (delta * (float) ((100 - getCurrentRssiPersantage()) / 100.0));
 
                         if (counter >= s) {
-                            toneGen1.startTone(ToneGenerator.TONE_PROP_BEEP, 100);
+                            if (!isSilent) {
+                                toneGen1.startTone(ToneGenerator.TONE_PROP_BEEP, 100);
+                            }
                             counter = 0;
                         }
 
                     } catch (InterruptedException e) {
-
+                        return;
                     }
 
                 }
             }
         };
 
-       // soundThread.start();
+        soundThread.start();
     }
 
     @Override
@@ -342,17 +344,17 @@ public class TrackingFragment extends Fragment {
 
                     if (mFragment.get().shouldCompare) {
                         String blied = mFragment.get().bleid;
-                        if (data.getBleId().equals(blied)) {
+                        if (data.getBleId().equalsIgnoreCase(blied)) {
                             mFragment.get().diagramAnimator.animateView(data.getRssi());
-                            if (mFragment.get().soundPlayer != null && mFragment.get().isSilent) {
-                                mFragment.get().soundPlayer.setFrequency(data.getRssi());
-                            }
+//                            if (mFragment.get().soundPlayer != null && mFragment.get().isSilent) {
+//                                mFragment.get().soundPlayer.setFrequency(data.getRssi());
+//                            }
                         }
                     } else {
                         mFragment.get().diagramAnimator.animateView(data.getRssi());
-                        if (mFragment.get().soundPlayer != null && mFragment.get().isSilent) {
-                            mFragment.get().soundPlayer.setFrequency(data.getRssi());
-                        }
+//                        if (mFragment.get().soundPlayer != null && mFragment.get().isSilent) {
+//                            mFragment.get().soundPlayer.setFrequency(data.getRssi());
+//                        }
                     }
 
                     break;
