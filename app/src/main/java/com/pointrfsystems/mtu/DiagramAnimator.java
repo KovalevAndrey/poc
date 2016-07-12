@@ -19,24 +19,31 @@ public class DiagramAnimator {
     private View max_rssi;
     private TextView curr_value;
     private TextView max_value;
-    private int max_rssi_value = -93;
+    private int max_rssi_value;
+    private int top_rssi;
+    private int min_rssi;
+    private float gap;
 
-    public DiagramAnimator(View current_rssi, View max_rssi, int animDuration, TextView curr_value, TextView max_value) {
+    public DiagramAnimator(View current_rssi, View max_rssi, int animDuration, TextView curr_value, TextView max_value, int top_rssi, int min_rssi) {
         this.current_rssi = current_rssi;
         this.max_rssi = max_rssi;
         this.animDuration = animDuration;
         this.curr_value = curr_value;
         this.max_value = max_value;
         this.defaultHeight = (int) (200 * Resources.getSystem().getDisplayMetrics().density);
+        this.top_rssi = top_rssi;
+        this.min_rssi = min_rssi;
+        this.max_rssi_value = min_rssi;
+        gap = Math.abs(top_rssi - min_rssi);
     }
 
     private int transformRssi(int rrsi) {
-        float res = (rrsi + 93) / 63f * defaultHeight;
+        float res = (rrsi - min_rssi) / gap * defaultHeight;
         return (int) res;
     }
 
     public void clearMaxValue() {
-        max_rssi_value = -93;
+        max_rssi_value = min_rssi;
         max_value.setText("");
         ViewGroup.LayoutParams layoutParams = max_rssi.getLayoutParams();
         layoutParams.height = 0;
@@ -47,8 +54,8 @@ public class DiagramAnimator {
 
         float n = rssi;
 
-        n += 93;
-        n /= 63f;
+        n += Math.abs(min_rssi);
+        n /= gap;
         n *= 100;
 
         int r = (int) (255 - (255.0 * n / 100));

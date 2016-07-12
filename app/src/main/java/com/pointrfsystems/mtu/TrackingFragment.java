@@ -58,11 +58,11 @@ public class TrackingFragment extends Fragment {
     private String bleid;
     private boolean shouldCompare;
     private DiagramAnimator diagramAnimator;
-    LocalRepository localRepository;
+    private LocalRepository localRepository;
     private UsbService usbService;
     private SoundPlayer soundPlayer;
 
-    private int currentRssi;
+    private int maxRssi;
     private Thread soundThread;
 
     private boolean isSilent;
@@ -136,7 +136,7 @@ public class TrackingFragment extends Fragment {
             shouldCompare = true;
         }
 
-        diagramAnimator = new DiagramAnimator(bar, max_bar, 400, curr_value, max_value);
+        diagramAnimator = new DiagramAnimator(bar, max_bar, 400, curr_value, max_value, -30, -93);
         clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -230,7 +230,7 @@ public class TrackingFragment extends Fragment {
     }
 
     private int getCurrentRssiPersantage() {
-        return (currentRssi + 93) / 60 * 100;
+        return (maxRssi + 93) / 60 * 100;
     }
 
     @Override
@@ -328,33 +328,23 @@ public class TrackingFragment extends Fragment {
 
             switch (msg.what) {
                 case UsbService.MESSAGE_FROM_SERIAL_PORT:
-                    int i;
-                    //String data = (String) msg.obj;
-
                     if (mFragment.get() == null) {
                         return;
                     }
                     SerialPortMessage data = (SerialPortMessage) msg.obj;
-                    //parser.newData(data.getBytes(), data.length());
 
-                    //mFragment.get().display.append(data);
-
-                    mFragment.get().currentRssi = data.getRssi();
+                    if (data.getRssi() > mFragment.get().maxRssi) {
+                        mFragment.get().maxRssi = data.getRssi();
+                    }
 
 
                     if (mFragment.get().shouldCompare) {
                         String blied = mFragment.get().bleid;
                         if (data.getBleId().equalsIgnoreCase(blied)) {
                             mFragment.get().diagramAnimator.animateView(data.getRssi());
-//                            if (mFragment.get().soundPlayer != null && mFragment.get().isSilent) {
-//                                mFragment.get().soundPlayer.setFrequency(data.getRssi());
-//                            }
                         }
                     } else {
                         mFragment.get().diagramAnimator.animateView(data.getRssi());
-//                        if (mFragment.get().soundPlayer != null && mFragment.get().isSilent) {
-//                            mFragment.get().soundPlayer.setFrequency(data.getRssi());
-//                        }
                     }
 
                     break;

@@ -228,6 +228,8 @@ public class PasscodeFragment extends Fragment {
             options.inPreferredConfig = Bitmap.Config.ARGB_8888;
             Bitmap bitmap = BitmapFactory.decodeFile(path, options);
             pointrf_image.setImageBitmap(bitmap);
+        } else {
+            pointrf_image.setBackground(getResources().getDrawable(R.drawable.pintrf_logo));
         }
 
         String path1 = localRepository.getNowanderPath();
@@ -236,6 +238,8 @@ public class PasscodeFragment extends Fragment {
             options.inPreferredConfig = Bitmap.Config.ARGB_8888;
             Bitmap bitmap = BitmapFactory.decodeFile(path1, options);
             nw_image.setImageBitmap(bitmap);
+        } else {
+            nw_image.setBackground(getResources().getDrawable(R.drawable.no_wander_logo));
         }
 
         String path2 = localRepository.getFacilityPath();
