@@ -14,6 +14,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +41,7 @@ public class TrackingFragment extends Fragment {
 
     private static final String BLEID = "bleid";
     private static final String BLEID_VALUE = "value";
+    public static final long DISCONNECT_TIMEOUT = 2000;
 
     @Bind(R.id.bar_curent_rssi)
     ImageView bar;
@@ -61,9 +63,40 @@ public class TrackingFragment extends Fragment {
     private LocalRepository localRepository;
     private UsbService usbService;
     private SoundPlayer soundPlayer;
+    private boolean wasSoundOn;
 
-    private int maxRssi;
+    private int maxRssi = -93;
+    private int currentRssi;
     private Thread soundThread;
+
+    private Handler noRssiHandler = new Handler() {
+        public void handleMessage(Message msg) {
+        }
+    };
+
+    private void resetDisconnectTimer() {
+        noRssiHandler.removeCallbacks(disconnectCallback);
+        noRssiHandler.postDelayed(disconnectCallback, DISCONNECT_TIMEOUT);
+    }
+
+    private Runnable disconnectCallback = new Runnable() {
+        @Override
+        public void run() {
+            wasSoundOn = isSilent;
+            muteSound();
+            diagramAnimator.clearMaxValue();
+        }
+    };
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        stopDisconnectTimer();
+    }
+
+    public void stopDisconnectTimer() {
+        noRssiHandler.removeCallbacks(disconnectCallback);
+    }
 
     private boolean isSilent;
 
@@ -161,17 +194,24 @@ public class TrackingFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (isSilent) {
-                    sound_image.setBackground(getResources().getDrawable(R.drawable.unmute_image));
-                    isSilent = false;
+                    unmuteSound();
                 } else {
-                    sound_image.setBackground(getResources().getDrawable(R.drawable.mute_image));
-                    isSilent = true;
+                    muteSound();
                 }
             }
         });
 
-
         return view;
+    }
+
+    private void muteSound() {
+        sound_image.setBackground(getResources().getDrawable(R.drawable.mute_image));
+        isSilent = true;
+    }
+
+    private void unmuteSound() {
+        sound_image.setBackground(getResources().getDrawable(R.drawable.unmute_image));
+        isSilent = false;
     }
 
 
@@ -198,7 +238,7 @@ public class TrackingFragment extends Fragment {
 
                         Thread.sleep(minFreq);
 
-                        if (getCurrentRssiPersantage() < 0)
+                        if (getCurrentRssiPersantage() <= 0)
                             continue;
                         counter += minFreq;
 
@@ -229,14 +269,19 @@ public class TrackingFragment extends Fragment {
         soundThread.interrupt();
     }
 
-    private int getCurrentRssiPersantage() {
-        return (maxRssi + 93) / 60 * 100;
+    private float getCurrentRssiPersantage() {
+        if (maxRssi == -93)
+            return 100;
+        float result = (Math.abs(maxRssi+93) - Math.abs(maxRssi - currentRssi)) / (float) Math.abs(maxRssi+93) * 100f;
+        Log.d("LOG", result + "   " + maxRssi+ "  "+ currentRssi);
+        return result;
     }
 
     @Override
     public void onResume() {
         super.onResume();
         mHandler = new MyHandler(this);
+        resetDisconnectTimer();
         setFilters();  // Start listening notifications from UsbService
         startService(UsbService.class, usbConnection, null); // Start UsbService(if it was not started before) and Bind it
     }
@@ -333,6 +378,8 @@ public class TrackingFragment extends Fragment {
                     }
                     SerialPortMessage data = (SerialPortMessage) msg.obj;
 
+                    mFragment.get().currentRssi = data.getRssi();
+
                     if (data.getRssi() > mFragment.get().maxRssi) {
                         mFragment.get().maxRssi = data.getRssi();
                     }
@@ -342,6 +389,10 @@ public class TrackingFragment extends Fragment {
                         String blied = mFragment.get().bleid;
                         if (data.getBleId().equalsIgnoreCase(blied)) {
                             mFragment.get().diagramAnimator.animateView(data.getRssi());
+                            mFragment.get().resetDisconnectTimer();
+                            if (mFragment.get().wasSoundOn) {
+                                mFragment.get().unmuteSound();
+                            }
                         }
                     } else {
                         mFragment.get().diagramAnimator.animateView(data.getRssi());
