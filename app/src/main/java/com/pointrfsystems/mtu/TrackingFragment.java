@@ -63,7 +63,7 @@ public class TrackingFragment extends Fragment {
     private LocalRepository localRepository;
     private UsbService usbService;
     private SoundPlayer soundPlayer;
-    private boolean wasSoundOn;
+    private boolean isMoreThanTwoSeconds;
 
     private int maxRssi = -93;
     private int currentRssi;
@@ -82,8 +82,7 @@ public class TrackingFragment extends Fragment {
     private Runnable disconnectCallback = new Runnable() {
         @Override
         public void run() {
-            wasSoundOn = isSilent;
-            muteSound();
+            isMoreThanTwoSeconds = true;
             diagramAnimator.clearMaxValue();
         }
     };
@@ -245,7 +244,7 @@ public class TrackingFragment extends Fragment {
                         long s = (long) (delta * (float) ((100 - getCurrentRssiPersantage()) / 100.0));
 
                         if (counter >= s) {
-                            if (!isSilent) {
+                            if (!isSilent && !isMoreThanTwoSeconds) {
                                 toneGen1.startTone(ToneGenerator.TONE_PROP_BEEP, 100);
                             }
                             counter = 0;
@@ -390,8 +389,8 @@ public class TrackingFragment extends Fragment {
                         if (data.getBleId().equalsIgnoreCase(blied)) {
                             mFragment.get().diagramAnimator.animateView(data.getRssi());
                             mFragment.get().resetDisconnectTimer();
-                            if (mFragment.get().wasSoundOn) {
-                                mFragment.get().unmuteSound();
+                            if (mFragment.get().isMoreThanTwoSeconds) {
+                                mFragment.get().isMoreThanTwoSeconds = false;
                             }
                         }
                     } else {

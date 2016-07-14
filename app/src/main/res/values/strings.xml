@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">POC</string>
+    <string name="app_name">MTU</string>
     <string name="passcode_incorrect">Invalid passcode</string>
     <string name="enter_bleid">Please enter bleid</string>
     <string name="bleid_go_to">Go to tracking screen</string>
