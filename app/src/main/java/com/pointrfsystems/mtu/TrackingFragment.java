@@ -63,7 +63,7 @@ public class TrackingFragment extends Fragment {
     private LocalRepository localRepository;
     private UsbService usbService;
     private SoundPlayer soundPlayer;
-    private boolean isMoreThanTwoSeconds;
+    private boolean isMoreThanTwoSeconds = true;
 
     private int maxRssi = -93;
     private int currentRssi;
