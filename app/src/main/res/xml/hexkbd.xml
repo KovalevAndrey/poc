@@ -63,10 +63,10 @@
     </Row>
 
     <Row>
-        <Key android:codes="65"    android:keyLabel="A" android:keyEdgeFlags="left"  />
-        <Key android:codes="66"    android:keyLabel="B" />
-        <Key android:codes="67"    android:keyLabel="C" />
+        <Key android:codes="67"    android:keyLabel="C" android:keyEdgeFlags="left"  />
         <Key android:codes="68"    android:keyLabel="D" />
+        <Key android:codes="69"    android:keyLabel="E" />
+        <Key android:codes="70"    android:keyLabel="F" />
     </Row>
 
     <Row>
