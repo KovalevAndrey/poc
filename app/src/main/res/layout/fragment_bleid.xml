@@ -12,7 +12,7 @@
         android:layout_above="@+id/enter_bleid"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="10dp"
-        android:digits="0123456789abcd"
+        android:digits="0123456789abcdefABCDEF"
         android:maxLength="4" />
 
     <Button

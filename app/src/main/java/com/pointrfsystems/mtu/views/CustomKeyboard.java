@@ -34,7 +34,7 @@ public class CustomKeyboard {
         public final static int CodeDelete = -5; // Keyboard.KEYCODE_DELETE
         public final static int CodeCancel = -3; // Keyboard.KEYCODE_CANCEL
         public final static int CodeClear = 55006;
-        public final static int CodeEnter = 69;
+        public final static int CodeEnter = 23432;
 
         @Override
         public void onKey(int primaryCode, int[] keyCodes) {
